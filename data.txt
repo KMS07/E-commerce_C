@@ -1,1 +1,4 @@
 sid itemid name quantity price
+684 175 Corn 6 890
+684 675 T-shirt 10 500
+684 271 pant 5 500

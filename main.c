@@ -44,7 +44,6 @@ int main(){
     
     int choice = 'Y';
     int sid = -1;
-    node1 *sklist = create_head();
     // while(choice == 'Y'){
         int role = -999;
         printf("Enter 1 for Shopkeeper login and 2 for Buyer login\n\n");
@@ -108,7 +107,7 @@ int main(){
             if(checkBuyer(bid) == 1){
                 choice = 'Y';
                 while(choice == 'Y'){
-                    printf("Items available:\n");
+                    printf("\nItems available:\n");
                     printf("Shopkeeper_id itemid itemname quantity price\n");
                     FILE *fp = fopen("data.txt","r");
 
@@ -130,7 +129,7 @@ int main(){
                     if(todo == 1){
                         int itemid,sid,quantityTaken;
                         printf("Enter itemid and shopkeeper id to add item to cart");
-                        scanf("%d %d",itemid,sid);
+                        scanf("%d %d",&itemid,&sid);
                         printf("Enter the quantity");
                         scanf("%d",&quantityTaken);
                         addtocart(itemid,sid,bid,quantityTaken);
@@ -162,6 +161,7 @@ int main(){
                         //     printf("The shopkeeper isn't available");
                         // }
                         float gst = 18; // fixing gst at 18%
+                        printf("%d %f",bid,gst);
                         makeOrder(gst,bid);
                     }else if(todo == 3){
                         viewcart(bid);
@@ -185,7 +185,8 @@ int main(){
                     printf("\nYour id is: %d",addBuyer(name));
                 }
             }
-            
+        }else{
+            printf("Invalid choice\n");
         }
     // }
 }

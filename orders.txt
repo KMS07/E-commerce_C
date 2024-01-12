@@ -1,1 +1,2 @@
-bid buyername itemId quantityTaken totalPrice sId orderDate
+bid itemname itemId quantityTaken totalPrice sId orderDate
+130 Corn 175 3 3150.600000 684 13/1/2024

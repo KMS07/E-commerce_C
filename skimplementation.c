@@ -92,7 +92,7 @@ void viewOrders(int sId){
     int itemId,quantityTaken,totalPrice;
     char orderDate[100];
     
-    while (fscanf(fp, "%s %d %d %d %d %s",buyername,&itemId,&quantityTaken,&totalPrice,&id,orderDate) == 6) {
+    while (fscanf(fp, "%*d %s %d %d %d %d %s",buyername,&itemId,&quantityTaken,&totalPrice,&id,orderDate) == 6) {
         // Check if the current record matches the parameters to delete
         if (id == sId) {
             printf("%s %d %d %d %s",buyername,itemId,quantityTaken,totalPrice,orderDate);
@@ -150,7 +150,7 @@ void addItem(int sId){
             newItem.itemName, newItem.QOH, newItem.price);
     fclose(filePointer);
 
-    printf("Item added successfully\n");
+    printf("Item added successfully");
 }
 
 void removeItem(int itemId,int sId){
