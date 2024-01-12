@@ -1,0 +1,1 @@
+bid buyername itemId quantityTaken totalPrice sId orderDate
