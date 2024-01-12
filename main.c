@@ -135,32 +135,34 @@ int main(){
                         scanf("%d",&quantityTaken);
                         addtocart(itemid,sid,bid,quantityTaken);
                     }else if(todo == 2){
-                        printf("Shopkeepers available:\n");
-                        printf("Name id\n");
-                        FILE *fp = fopen("sklist.txt","r");
-                        int id;
-                        char skname[100];
+                        // printf("Shopkeepers available:\n");
+                        // printf("Name id\n");
+                        // FILE *fp = fopen("sklist.txt","r");
+                        // int id;
+                        // char skname[100];
 
-                        while(fscanf(fp,"%d %s",&id,skname) == 2){
-                            printf("%s %d\n",skname,id);
-                        }
+                        // while(fscanf(fp,"%d %s",&id,skname) == 2){
+                        //     printf("%s %d\n",skname,id);
+                        // }
 
-                        printf("\n Enter the shopkeeper id u want to buy from");
-                        scanf("%d",&id);
+                        // printf("\n Enter the shopkeeper id u want to buy from");
+                        // scanf("%d",&id);
                         
-                        if(checkShopkeeper(id) == 1){
-                            int itemId,quantity;
-                            printf("Shopkeeper_id itemid itemname quantity price\n");
-                            viewItems(id);
-                            printf("Enter the item id:");
-                            scanf("%d",&itemId);
-                            printf("Enter the item quantity:");
-                            printf("%d",&quantity);
+                        // if(checkShopkeeper(id) == 1){
+                        //     int itemId,quantity;
+                        //     printf("Shopkeeper_id itemid itemname quantity price\n");
+                        //     viewItems(id);
+                        //     printf("Enter the item id:");
+                        //     scanf("%d",&itemId);
+                        //     printf("Enter the item quantity:");
+                        //     printf("%d",&quantity);
                             
-                            makeOrder(itemId,id,quantity,skname);
-                        }else{
-                            printf("The shopkeeper isn't available");
-                        }
+                        //     makeOrder(itemId,id,quantity,skname);
+                        // }else{
+                        //     printf("The shopkeeper isn't available");
+                        // }
+                        float gst = 18; // fixing gst at 18%
+                        makeOrder(gst,bid);
                     }else if(todo == 3){
                         viewcart(bid);
                     }else{

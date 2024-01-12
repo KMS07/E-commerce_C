@@ -5,10 +5,12 @@
 int numOfOrders = 0;
 // int itemId, int sId,int quantity,char *buyerName
 void makeOrder(float gst,int bid){
-    FILE *fp,*fp1,*fp2;
+    FILE *fp,*fp1,*fp2,*tp;
     fp = fopen("cart.txt","r");
     fp1 = fopen("orders.txt","a");
     fp2 = fopen("data.txt","r");
+
+    tp = fopen("temp.txt","w");
     if (fp == NULL || fp1 == NULL) {
         printf("File opening failed.\n");
         return ;
@@ -18,28 +20,52 @@ void makeOrder(float gst,int bid){
     char buffer1[100];
     fgets(buffer1,sizeof(buffer1),fp1);
 
-    int shkId, id,bId;
+    int cartshkId,shkId, id,bId,itemId;
     char name[100];
-    int itemquantity,quantityTaken;
+    int quantityTaken,quantity;
     int price;
-    // Read each record from the input file
-    while (fscanf(fp, "%d %d %s %d %d", &bId, &id, name, &shkId, &quantityTaken) == 5 && fscanf()) {
-        if (bid == bId) {
-            deletefromcart(bid,id);
-            fprintf(fp1, "%d %s %d %d %d\n", bid, name,id, quantityTaken,itemquantity - quantity , price);
-        }   
-    }
-    // Creating the order
+
     // Find current date
     time_t currentTime;
     struct tm *localTime;
     time(&currentTime);        
     localTime = localtime(&currentTime);
 
-    // Adding order to the file
-    fprintf(fp1,"%s %d %d %d %d %d/%d/%d",buyerName,itemId,quantity,price*quantity,sId,localTime->tm_mday,localTime->tm_mon+1,localTime->tm_year+1900);
+    // First updating the items quantity as they being ordered
+    char buffer[100];
+
+    // Skip the first line
+    fgets(buffer,sizeof(buffer),fp);
+
+    fprintf(tp,"%s\n","sid itemid name quantity price");
+    // Read each record from the input file
+    while (fscanf(fp, "%d %d %s %d %d", &shkId, &id, name, &quantity, &price) == 5 && fscanf(fp, "%*d %d %*s %d %d",&itemId,&cartshkId,&quantityTaken) == 2) {
+
+        if (shkId == cartshkId && id == itemId) {
+            fprintf(tp, "%d %d %s %d %d\n", shkId, itemId, name, quantity - quantityTaken, price); // Update this record if it matches cart item
+            continue;
+        }
+        // just write the record to the temporary file if not cart item
+        fprintf(tp, "%d %d %s %d %d\n", shkId, id, name, quantity, price);
+    }
+    fclose(tp);   
+
+    remove("data.txt");
+    rename("temp.txt", "data.txt");
+
+    // Order processing
+    while (fscanf(fp, "%d %d %s %d %d", &bId, &id, name, &shkId, &quantityTaken) == 5 && fscanf(fp2,"%*d %*d %*s %*d %d",&price) == 1) {
+        if (bid == bId) {
+            deletefromcart(bid,id);
+            // Adding order to the file
+            fprintf(fp1, "%d %s %d %d %f %d %d/%d/%d\n", bid, name,id, quantityTaken,((1+(gst/100))*price*quantityTaken,shkId), shkId,localTime->tm_mday,localTime->tm_mon+1,localTime->tm_year+1900);
+        }   
+    }
     printf("Order placed successfully");
     numOfOrders++;
+    fclose(fp);
+    fclose(fp1);
+    fclose(fp2);
 }
 
 int addBuyer(char *bname){
@@ -128,6 +154,7 @@ void addtocart(int itemid,int sid,int bid,int quantityTaken){
     // Read each record from the input file 
     while (fscanf(fp1, "%d %d %s %d %d", &shkId, &id, name, &itemquantity, &price) == 5) {
         if (shkId == sid && id == itemid) {
+            // If quanitity is selected more cant be added to cart
             if(quantityTaken > itemquantity){
                 printf("Enter less than %d quantity",itemquantity);
             }else{
