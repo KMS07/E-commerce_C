@@ -1,2 +1,2 @@
 sid itemid name quantity price
-684 175 Corn 3 890
+684 175 Corn 6 890

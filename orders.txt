@@ -1,2 +1,4 @@
 bid itemname itemId quantityTaken totalPrice sId orderDate
-130 Corn 175 3 3150.600000 684 13/1/2024
+
+130 T-shirt 675 4 4200.800000 684 13/1/2024
+130 pant 271 3 3150.600000 684 14/1/2024

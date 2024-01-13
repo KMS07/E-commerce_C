@@ -34,13 +34,12 @@ void makeOrder(float gst,int bid){
     fp = fopen("cart.txt","r");
     fp1 = fopen("orders.txt","a");
     fp2 = fopen("data.txt","r");
-
     tp = fopen("temp.txt","w");
-    if (fp == NULL || fp1 == NULL) {
-        printf("File opening failed.\n");
-        return ;
-    }
 
+    if (fp == NULL || fp1 == NULL || fp2 == NULL || tp == NULL) {
+        perror("File opening failed");
+        return;
+    }
     // Skip the first line in orders file
     char buffer1[100];
     fgets(buffer1,sizeof(buffer1),fp1);
@@ -63,15 +62,12 @@ void makeOrder(float gst,int bid){
     fprintf(tp,"%s\n","sid itemid name quantity price");
     // Read each record from the input file
     while (fscanf(fp2, "%d %d %s %d %d", &shkId, &id, name, &quantity, &price) == 5 && fscanf(fp, "%*d %d %*s %d %d",&itemId,&cartshkId,&quantityTaken) == 3) {
-        printf("Entered\n");
         if (shkId == cartshkId && id == itemId) {
-            printf("Deducted");
             fprintf(tp, "%d %d %s %d %d\n", shkId, itemId, name, quantity - quantityTaken, price); // Update this record if it matches cart item
             continue;
         }
         // just write the record to the temporary file if not cart item
         fprintf(tp, "%d %d %s %d %d\n", shkId, id, name, quantity, price);
-        printf("Hello\n");
     }
     fclose(fp2);
     fclose(tp);   

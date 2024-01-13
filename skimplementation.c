@@ -1,6 +1,7 @@
 #include "shopkeeper.h"
 #include <stdio.h>
 #include <time.h>
+#include <string.h>
 
 node1 * create_node1(struct shopkeeper newsk){
     node1 *n;
@@ -239,4 +240,91 @@ void updateItem(int itemId,int sId){
     rename("temp.txt", "data.txt"); // Rename the temporary file to the original file name
     printf("Item updated successfully\n");
 }
+int isDateValid(char* startDate, char* endDate) {
+    // Convert dates to integers for easy comparison
+    int startDay, startMonth, startYear;
+    int endDay, endMonth, endYear;
 
+    sscanf(startDate, "%d/%d/%d", &startDay, &startMonth, &startYear);
+    sscanf(endDate, "%d/%d/%d", &endDay, &endMonth, &endYear);
+
+    // Check if start date is less than end date
+    if (startYear < endYear || (startYear == endYear && (startMonth < endMonth || (startMonth == endMonth && startDay <= endDay)))) {
+        return 1; // Valid date range
+    } else {
+        return 0; // Invalid date range
+    }
+}
+void viewReports(int sId, char* startDate, char* endDate) {
+    // Check valid date range
+    if (!isDateValid(startDate, endDate)) {
+        printf("Invalid date range. End date should be greater than start date.\n");
+        return;
+    }
+    FILE *ordersFile, *buyerFile;
+    ordersFile = fopen("orders.txt", "r");
+    buyerFile = fopen("buyers.txt", "r");
+
+    if (ordersFile == NULL || buyerFile == NULL) {
+        perror("File opening failed");
+        return;
+    }
+
+    // Variables to store data from files
+    int bid, itemId, quantityTaken, sIdFromFile;
+    float totalPrice;
+    char orderDate[11]; // Assuming date format dd/mm/yyyy
+
+    // Variables for buyer information
+    int buyerId;
+    char buyerName[100];
+
+    // Variables for report counts
+    int totalSales = 0;
+    int ordersInRange = 0;
+    int buyersPurchased = 0;
+
+    // Skip the header line in orders file
+    char buffer[256];
+    fgets(buffer, sizeof(buffer), ordersFile);
+
+    // Read each record from the orders file
+    while (fscanf(ordersFile, "%d %*s %d %d %f %d %[^\n]", &bid, &itemId, &quantityTaken, &totalPrice, &sIdFromFile, orderDate) == 6) {
+        if (sIdFromFile == sId) {
+            // Increment total sales
+            totalSales++;
+
+            // Check if the order date is within the specified range
+            if ((strcmp(orderDate, startDate) >= 0) && (strcmp(orderDate, endDate) <= 0)) {
+                ordersInRange++;
+            }
+        }
+    }
+
+    // Rewind and skip the header line in buyer file
+    rewind(buyerFile);
+
+    // Read each record from the buyer file
+    while (fscanf(buyerFile, "%d %s", &buyerId, buyerName) == 2) {
+        // Check if the buyer has made a purchase from the specified shopkeeper
+        fseek(ordersFile, 0, SEEK_SET); // Rewind orders file to start
+        
+        // skip first line
+        fgets(buffer, sizeof(buffer), ordersFile);
+        while (fscanf(ordersFile, "%d %*s %*d %*d %*f %d %[^\n]", &bid, &sIdFromFile, orderDate) == 3) {
+            if (sIdFromFile == sId && bid == buyerId) {
+                buyersPurchased++;
+                break; // No need to check further for this buyer
+            }
+        }
+    }
+
+    // Display the reports
+    printf("Total number of sales for shopkeeper %d: %d\n", sId, totalSales);
+    printf("Orders placed between %s and %s: %d\n", startDate, endDate, ordersInRange);
+    printf("Number of buyers who purchased from shopkeeper %d: %d\n", sId, buyersPurchased);
+
+    // Close the files
+    fclose(ordersFile);
+    fclose(buyerFile);
+}

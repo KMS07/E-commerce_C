@@ -3,48 +3,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef struct cartstore{
-    int itemid;
-    int sid;
-}cart;
-
-typedef struct SLL2{
-    struct cartstore cart;
-    struct SLL1 *next;
-}node2;
-
-node2* create_node2(cart newcart){
-    node2 *n;
-    n=(node2*)malloc(sizeof(node2));
-    n->cart=newcart;
-    n->next=NULL;
-    return n;
-}
-node2* create_head2(){
-    node2 *n;
-    n=(node2*)malloc(sizeof(node2));
-    n->next=NULL;
-    return n;
-}
-
-void InsertAtEnd2(node2 *n,cart c){
-   node2 *newnode;
-   newnode =create_node2(c);
-   node2 *temp=n;
-   while(temp->next!=NULL){
-        temp=temp->next;
-   }
-   temp->next=newnode;
-}
 
 
 int main(){
-    
     printf("Welcome to E-Commerce Store!!!\n\n\n");
-    
     int choice = 'Y';
     int sid = -1;
-    // while(choice == 'Y'){
+    while(1){
         int role = -999;
         printf("Enter 1 for Shopkeeper login and 2 for Buyer login\n\n");
         scanf("%d",&role);
@@ -53,10 +18,10 @@ int main(){
             scanf("%d",&sid);
             if(checkShopkeeper(sid) == 1){
                 choice = 'Y';
+                printf("Successful login!!");
                 while(choice == 'Y'){
                     int todo = -98;
-                    printf("Successful login!!");
-                    printf("\nHello shopkeeper\n\nEnter:\n1. To view orders\n2. To view items\n3. To add item\n4. To remove item\n5. To update item\n");
+                    printf("\nHello shopkeeper\n\nEnter:\n1. To view orders\n2. To view items\n3. To add item\n4. To remove item\n5. To update item\n6.To view reports\n");
                     scanf("%d",&todo);
                     if(todo == 1){
                         printf("buyername itemId quantityTaken totalPrice orderDate\n");
@@ -76,13 +41,24 @@ int main(){
                         printf("Enter item id to update:");
                         scanf("%d",&itemId);
                         updateItem(itemId,sid);
+                    }else if(todo == 6){
+                        char startDate[100];
+                        char endDate[100];
+
+                        // Take input for start and end date
+                        printf("Enter the start date(dd/mm/yyyy):");
+                        scanf("%s",startDate);
+
+                        printf("Enter the end date(dd/mm/yyyy):");
+                        scanf("%s",endDate);
+                        viewReports(sid,startDate,endDate);
                     }else{
                         printf("Invalid choice!!\n");
                     }
                     printf("Do you want to continue(Y/N)\n");
                     scanf(" %c",&choice);
                 }
-                printf("Logged out successfully!");
+                printf("Logged out successfully!\n");
             }else{
                 char login = 'N';
                 printf("You are not registered\n");
@@ -101,7 +77,6 @@ int main(){
         }else if(role == 2){
             printf("Hello buyer!!\n");
             int bid;
-
             printf("Enter your id");
             scanf("%d",&bid);
             if(checkBuyer(bid) == 1){
@@ -188,5 +163,5 @@ int main(){
         }else{
             printf("Invalid choice\n");
         }
-    // }
+    }
 }

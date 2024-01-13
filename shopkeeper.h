@@ -49,4 +49,6 @@ int checkShopkeeper(int sid);
 node1 * create_node1(struct shopkeeper newsk);
 node1 * create_head();
 void InsertAtEnd(node1 *n,struct shopkeeper sk);
+void viewReports(int sId, char* startDate, char* endDate);
+int isDateValid(char* startDate, char* endDate);
 #endif  // SHOPKEEPER_H
